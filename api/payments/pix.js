@@ -34,10 +34,19 @@ module.exports = async (req, res) => {
       process.env.VENOPAG_WEBHOOK_URL // opcional
     );
 
-    // Se o QR Code não aparecer no site, veja nos logs do Vercel o retorno
-    // real da VenoPag e ajuste os nomes dos campos abaixo.
+    // LOG TEMPORÁRIO: mostra a resposta completa da VenoPag nos logs do
+    // Vercel, pra a gente ver o nome certo de cada campo. Pode remover
+    // depois que o site estiver funcionando 100%.
+    console.log("Resposta completa da VenoPag:", JSON.stringify(cobranca));
+
     return res.status(200).json({
-      qrCode: cobranca.qr_url ?? cobranca.copy_paste ?? cobranca.emv,
+      qrCode:
+        cobranca.pix_copia_cola ??
+        cobranca.copia_cola ??
+        cobranca.copy_paste ??
+        cobranca.emv ??
+        cobranca.brcode ??
+        cobranca.qr_url,
       qrCodeBase64: cobranca.qr_image ?? cobranca.qrcode_base64 ?? null,
       requestNumber: cobranca.request_number,
       status: cobranca.status,
